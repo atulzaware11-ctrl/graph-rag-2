@@ -1,0 +1,9 @@
+PHASE 1  ✅ Vector RAG
+PHASE 2  🔨 Hybrid Vector + BM25
+PHASE 3  ⏭️ Neo4j Knowledge Graph
+PHASE 4  ⏭️ Graph Retrieval
+PHASE 5  ⏭️ Graph + Vector Hybrid
+PHASE 6  ⏭️ Reranking
+PHASE 7  ⏭️ Citations + Confidence
+PHASE 8  ⏭️ React Research UI
+PHASE 9  ⏭️ Evaluation / comparison
