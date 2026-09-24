@@ -1,1 +1,33 @@
 .env
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment secrets
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local data
+data/raw/
+data/processed/
+
+# Python test/cache
+.pytest_cache/
+.coverage
+htmlcov/
