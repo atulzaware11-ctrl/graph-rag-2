@@ -1,0 +1,265 @@
+{
+  "summary": {
+    "questions": 10,
+    "average_latency_seconds": 50.834,
+    "hit_at_1": 0.9,
+    "hit_at_3": 1.0,
+    "hit_at_5": 1.0,
+    "recall_at_3": 0.9083,
+    "recall_at_5": 1.0,
+    "mrr": 0.95,
+    "average_keyword_coverage": 0.8417,
+    "citation_validity_rate": 1.0
+  },
+  "results": [
+    {
+      "id": "q01",
+      "question": "What testing methods and testing skills are mentioned in the document?",
+      "expected_chunks": [
+        "chunk_0"
+      ],
+      "retrieved_chunks": [
+        "chunk_0",
+        "chunk_1",
+        "chunk_2",
+        "chunk_3"
+      ],
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "hit_at_5": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "keyword_coverage": 1.0,
+      "citation_valid": true,
+      "citation_count": 1,
+      "latency_seconds": 48.885,
+      "answer": "\n\nBased on the provided document, the following testing methods and testing skills are mentioned:\n\n### **Testing Methods**\n* **REST API Testing:** Testing REST APIs covering products, orders, and CRUD operations [Source 1, Source 2].\n* **Functional Testing:** Standard functional testing of web applications and APIs [Source 1].\n* **Negative Testing:** Testing for negative scenarios and invalid inputs in APIs and database operations [Source 1, Source 2].\n* **Database Validation & SQL Validation:** Verifying database records using SQL queries with SQLite and MySQL [Source 1, Source 2].\n* **API Response and HTTP Status Code Validation:** Validating HTTP status codes and JSON response data for positive and negative test scenarios [Source 1, Source 2].\n* **Automated Test Report Generation:** Generating self-contained HTML test execution reports using `pytest-html` [Source 1, Source 2].\n\n### **Testing & Automation Skills**\nThe document highlights several technical skills and tools used for testing and test automation:\n* **Programming & Automation Languages:** Python, PyTest, Requests, JSON [Source 1, Source 2].\n* **Database Technologies:** SQLite, SQL, MySQL [Source 1].\n* **Reporting & Tools:** pytest-html, HTML test reports [Source 1, Source 2]."
+    },
+    {
+      "id": "q02",
+      "question": "What technologies are used in the projects?",
+      "expected_chunks": [
+        "chunk_0",
+        "chunk_1",
+        "chunk_2",
+        "chunk_3"
+      ],
+      "retrieved_chunks": [
+        "chunk_3",
+        "chunk_2",
+        "chunk_0",
+        "chunk_1"
+      ],
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "hit_at_5": 1,
+      "recall_at_3": 0.75,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "keyword_coverage": 0.0,
+      "citation_valid": true,
+      "citation_count": 0,
+      "latency_seconds": 26.46,
+      "answer": "User Safety: safe"
+    },
+    {
+      "id": "q03",
+      "question": "What is the purpose of the E-Commerce API and Database QA Automation Framework?",
+      "expected_chunks": [
+        "chunk_0",
+        "chunk_1"
+      ],
+      "retrieved_chunks": [
+        "chunk_1",
+        "chunk_0",
+        "chunk_3",
+        "chunk_2"
+      ],
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "hit_at_5": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "keyword_coverage": 1.0,
+      "citation_valid": true,
+      "citation_count": 2,
+      "latency_seconds": 25.828,
+      "answer": "The purpose of the E-Commerce API and Database QA Automation Framework is to test an e-commerce REST API covering products and orders by automating product CRUD operations and negative test scenarios, verifying API responses and database records using SQL queries with SQLite, and generating HTML test reports [Source 1], [Source 2]."
+    },
+    {
+      "id": "q04",
+      "question": "What authentication mechanism is mentioned in the document?",
+      "expected_chunks": [
+        "chunk_3"
+      ],
+      "retrieved_chunks": [
+        "chunk_3",
+        "chunk_2",
+        "chunk_1",
+        "chunk_0"
+      ],
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "hit_at_5": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "keyword_coverage": 1.0,
+      "citation_valid": true,
+      "citation_count": 1,
+      "latency_seconds": 24.775,
+      "answer": "\n\nBased on the provided documents, the authentication mechanism mentioned is **OTP-based authentication** (One-Time Password-based authentication), which was implemented using `/send-otp` and `/verify-otp` workflows [Source 1]."
+    },
+    {
+      "id": "q05",
+      "question": "Which technologies are associated with the blockchain-based secure voting system?",
+      "expected_chunks": [
+        "chunk_2"
+      ],
+      "retrieved_chunks": [
+        "chunk_2",
+        "chunk_3",
+        "chunk_1",
+        "chunk_0"
+      ],
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "hit_at_5": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "keyword_coverage": 1.0,
+      "citation_valid": true,
+      "citation_count": 2,
+      "latency_seconds": 31.03,
+      "answer": "The blockchain\u2011based secure voting system is associated with HTML, CSS, JavaScript, Python (Flask) and a browser frontend.\u202f[Source 1],\u202f[Source 3]"
+    },
+    {
+      "id": "q06",
+      "question": "What cybersecurity-related work is mentioned?",
+      "expected_chunks": [
+        "chunk_3"
+      ],
+      "retrieved_chunks": [
+        "chunk_3",
+        "chunk_2",
+        "chunk_1",
+        "chunk_0"
+      ],
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "hit_at_5": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "keyword_coverage": 0.6667,
+      "citation_valid": true,
+      "citation_count": 2,
+      "latency_seconds": 29.984,
+      "answer": "The provided documents mention several cybersecurity\u2011related activities, including:\n\n- **OTP\u2011based authentication workflows** (sending and verifying OTPs). **[Source 1]**\n- **Secure web\u2011based e\u2011voting system prototype** built with secure coding practices for local\u2011storage data management. **[Source 1]**\n- **Cyber Security Intern** role (Nov\u202f2025\u202f\u2013\u202fJan\u202f2026) focusing on the e\u2011voting project. **[Source 1]**\n- **Cyber Security Awareness certification** (HP\u202fLIFE). **[Source 1]**\n- **Blockchain\u2011based secure voting system** prototype using a Flask backend and browser frontend. **[Source 2]**"
+    },
+    {
+      "id": "q07",
+      "question": "What types of applications or systems were developed?",
+      "expected_chunks": [
+        "chunk_1",
+        "chunk_2",
+        "chunk_3"
+      ],
+      "retrieved_chunks": [
+        "chunk_3",
+        "chunk_2",
+        "chunk_0",
+        "chunk_1"
+      ],
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "hit_at_5": 1,
+      "recall_at_3": 0.6667,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "keyword_coverage": 0.75,
+      "citation_valid": true,
+      "citation_count": 0,
+      "latency_seconds": 73.394,
+      "answer": "The following applications/systems were developed, based on the provided evidence:\n\n- Task management web application (Task Remainder) [1]  \n- Secure web-based e-voting system prototype [1]  \n- Blockchain-based secure voting system prototype [2, 4]  \n- E-commerce REST API QA automation framework [3, 4]  \n- REST API testing automation suite [3, 4]  \n- Web-based Tetris clone (Block Puzzle) [4]  \n- OTP-based authentication workflows [1]  \n\nThere is not enough evidence in the provided documents to describe the functional details or outcomes of these systems beyond what is listed above."
+    },
+    {
+      "id": "q08",
+      "question": "What programming languages are mentioned?",
+      "expected_chunks": [
+        "chunk_0"
+      ],
+      "retrieved_chunks": [
+        "chunk_0",
+        "chunk_2",
+        "chunk_3",
+        "chunk_1"
+      ],
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "hit_at_5": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "keyword_coverage": 1.0,
+      "citation_valid": true,
+      "citation_count": 1,
+      "latency_seconds": 66.194,
+      "answer": "The programming languages mentioned are **Python, C, C++, Java, JavaScript, and PHP** [Source 1]."
+    },
+    {
+      "id": "q09",
+      "question": "What testing-related tools and technologies are mentioned?",
+      "expected_chunks": [
+        "chunk_0",
+        "chunk_1"
+      ],
+      "retrieved_chunks": [
+        "chunk_0",
+        "chunk_1",
+        "chunk_3",
+        "chunk_2"
+      ],
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "hit_at_5": 1,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "keyword_coverage": 1.0,
+      "citation_valid": true,
+      "citation_count": 1,
+      "latency_seconds": 31.182,
+      "answer": "\n\nBased on the provided resume, the following testing-related tools, technologies, and concepts are mentioned:\n\n* **Automation & Testing Tools/Languages:** Python, PyTest, Requests, and pytest-html (used for automating REST API tests and generating HTML test reports) [Source 1].\n* **Testing Types & Practices:** REST API Testing, Functional Testing, Negative Testing, Database Validation, and SQL Validation [Source 1].\n* **Databases & APIs:** SQLite, SQL, MySQL, and JSON (used for verifying API responses and database records) [Source 1].\n* **Environment & Support Tools:** Git, GitHub, GitHub Codespaces, Docker, and Linux (Crostini) [Source 1]."
+    },
+    {
+      "id": "q10",
+      "question": "Which projects demonstrate software engineering skills?",
+      "expected_chunks": [
+        "chunk_1",
+        "chunk_2",
+        "chunk_3"
+      ],
+      "retrieved_chunks": [
+        "chunk_0",
+        "chunk_3",
+        "chunk_2",
+        "chunk_1"
+      ],
+      "hit_at_1": 0,
+      "hit_at_3": 1,
+      "hit_at_5": 1,
+      "recall_at_3": 0.6667,
+      "recall_at_5": 1.0,
+      "mrr": 0.5,
+      "keyword_coverage": 1.0,
+      "citation_valid": true,
+      "citation_count": 4,
+      "latency_seconds": 150.612,
+      "answer": "Based on the evidence, the following projects demonstrate software engineering skills:\n\n- **E-Commerce API & Database QA Automation Framework**: Built a QA automation framework for testing an e-commerce REST API, automating product CRUD operations and negative test scenarios using PyTest, Requests, Flask, and SQLite [Source 1][Source 4].  \n- **Task Remainder Web App**: Developed a responsive task management application using vanilla web technologies (HTML, CSS, JavaScript), implementing dynamic DOM manipulation and state persistence for task tracking [Source 1][Source 2].  \n- **Blockchain-based Secure Voting System**: Designed a blockchain-style e-voting prototype using a Python Flask backend and browser frontend [Source 3][Source 4].  \n- **Tetris Game (Block Puzzle)**: Developed a web-based Tetris clone applying core Data Structures and Algorithms concepts, including 2D matrix transformations for block rotation and collision detection [Source 3][Source 4].  \n- **REST API Testing Automation**: Automated REST API tests for GET, POST, PUT, and DELETE operations using Python, PyTest, and Requests, validating HTTP status codes and JSON response data [Source 4].  \n- **Secure web-based e-voting system prototype**: Developed during a Cyber Security Internship, applying secure coding practices for local storage data management [Source 1][Source 2].\n\nThese projects cover full-stack development, API design and testing, data structures implementation, blockchain concepts, and secure coding practices, all grounded in the provided evidence."
+    }
+  ]
+}

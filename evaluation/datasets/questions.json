@@ -1,0 +1,124 @@
+[
+  {
+    "id": "q01",
+    "question": "What testing methods and testing skills are mentioned in the document?",
+    "expected_chunks": ["chunk_0"],
+    "expected_keywords": [
+      "REST API Testing",
+      "Functional Testing",
+      "Negative Testing",
+      "Database Validation",
+      "SQL Validation"
+    ]
+  },
+  {
+    "id": "q02",
+    "question": "What technologies are used in the projects?",
+    "expected_chunks": ["chunk_0", "chunk_1", "chunk_2", "chunk_3"],
+    "expected_keywords": [
+      "Python",
+      "PyTest",
+      "Requests",
+      "Flask",
+      "SQLite",
+      "HTML",
+      "CSS",
+      "JavaScript"
+    ]
+  },
+  {
+    "id": "q03",
+    "question": "What is the purpose of the E-Commerce API and Database QA Automation Framework?",
+    "expected_chunks": ["chunk_0", "chunk_1"],
+    "expected_keywords": [
+      "QA automation framework",
+      "e-commerce REST API",
+      "products",
+      "orders",
+      "CRUD",
+      "negative test"
+    ]
+  },
+  {
+    "id": "q04",
+    "question": "What authentication mechanism is mentioned in the document?",
+    "expected_chunks": ["chunk_3"],
+    "expected_keywords": [
+      "OTP",
+      "authentication",
+      "send-otp",
+      "verify-otp"
+    ]
+  },
+  {
+    "id": "q05",
+    "question": "Which technologies are associated with the blockchain-based secure voting system?",
+    "expected_chunks": ["chunk_2"],
+    "expected_keywords": [
+      "blockchain",
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "Python",
+      "Flask"
+    ]
+  },
+  {
+    "id": "q06",
+    "question": "What cybersecurity-related work is mentioned?",
+    "expected_chunks": ["chunk_3"],
+    "expected_keywords": [
+      "Cyber Security Intern",
+      "secure web-based e-voting system",
+      "secure coding practices"
+    ]
+  },
+  {
+    "id": "q07",
+    "question": "What types of applications or systems were developed?",
+    "expected_chunks": ["chunk_1", "chunk_2", "chunk_3"],
+    "expected_keywords": [
+      "REST API",
+      "Tetris",
+      "e-voting",
+      "Task Remainder Web App"
+    ]
+  },
+  {
+    "id": "q08",
+    "question": "What programming languages are mentioned?",
+    "expected_chunks": ["chunk_0"],
+    "expected_keywords": [
+      "Python",
+      "C",
+      "C++",
+      "Java",
+      "JavaScript"
+    ]
+  },
+  {
+    "id": "q09",
+    "question": "What testing-related tools and technologies are mentioned?",
+    "expected_chunks": ["chunk_0", "chunk_1"],
+    "expected_keywords": [
+      "PyTest",
+      "Requests",
+      "pytest-html",
+      "SQL",
+      "SQLite"
+    ]
+  },
+  {
+    "id": "q10",
+    "question": "Which projects demonstrate software engineering skills?",
+    "expected_chunks": ["chunk_1", "chunk_2", "chunk_3"],
+    "expected_keywords": [
+      "QA automation",
+      "REST API",
+      "Tetris",
+      "blockchain",
+      "e-voting",
+      "Task Remainder"
+    ]
+  }
+]
