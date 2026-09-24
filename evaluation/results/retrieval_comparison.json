@@ -1,0 +1,894 @@
+{
+  "dataset": "evaluation\\datasets\\questions.json",
+  "question_count": 10,
+  "results": [
+    {
+      "retriever": "Vector",
+      "questions": 10,
+      "hit_at_1": 0.9,
+      "hit_at_3": 1.0,
+      "hit_at_5": 1.0,
+      "recall_at_3": 0.9417,
+      "recall_at_5": 1.0,
+      "mrr": 0.95,
+      "average_latency_seconds": 0.1127,
+      "details": [
+        {
+          "id": "q01",
+          "question": "What testing methods and testing skills are mentioned in the document?",
+          "expected": [
+            "chunk_0"
+          ],
+          "retrieved": [
+            "chunk_0",
+            "chunk_1",
+            "chunk_3",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.3611
+        },
+        {
+          "id": "q02",
+          "question": "What technologies are used in the projects?",
+          "expected": [
+            "chunk_0",
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_1",
+            "chunk_3",
+            "chunk_0",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 0.75,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.1039
+        },
+        {
+          "id": "q03",
+          "question": "What is the purpose of the E-Commerce API and Database QA Automation Framework?",
+          "expected": [
+            "chunk_0",
+            "chunk_1"
+          ],
+          "retrieved": [
+            "chunk_0",
+            "chunk_1",
+            "chunk_3",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.1011
+        },
+        {
+          "id": "q04",
+          "question": "What authentication mechanism is mentioned in the document?",
+          "expected": [
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_2",
+            "chunk_1",
+            "chunk_0"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0932
+        },
+        {
+          "id": "q05",
+          "question": "Which technologies are associated with the blockchain-based secure voting system?",
+          "expected": [
+            "chunk_2"
+          ],
+          "retrieved": [
+            "chunk_2",
+            "chunk_3",
+            "chunk_1",
+            "chunk_0"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0956
+        },
+        {
+          "id": "q06",
+          "question": "What cybersecurity-related work is mentioned?",
+          "expected": [
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_2",
+            "chunk_1",
+            "chunk_0"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0826
+        },
+        {
+          "id": "q07",
+          "question": "What types of applications or systems were developed?",
+          "expected": [
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_2",
+            "chunk_1",
+            "chunk_3",
+            "chunk_0"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0857
+        },
+        {
+          "id": "q08",
+          "question": "What programming languages are mentioned?",
+          "expected": [
+            "chunk_0"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_0",
+            "chunk_1",
+            "chunk_2"
+          ],
+          "hit_at_1": 0,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 0.5,
+          "latency_seconds": 0.0491
+        },
+        {
+          "id": "q09",
+          "question": "What testing-related tools and technologies are mentioned?",
+          "expected": [
+            "chunk_0",
+            "chunk_1"
+          ],
+          "retrieved": [
+            "chunk_1",
+            "chunk_0",
+            "chunk_3",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0696
+        },
+        {
+          "id": "q10",
+          "question": "Which projects demonstrate software engineering skills?",
+          "expected": [
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_0",
+            "chunk_1",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 0.6666666666666666,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0854
+        }
+      ]
+    },
+    {
+      "retriever": "BM25",
+      "questions": 10,
+      "hit_at_1": 0.3,
+      "hit_at_3": 0.9,
+      "hit_at_5": 1.0,
+      "recall_at_3": 0.7583,
+      "recall_at_5": 1.0,
+      "mrr": 0.5917,
+      "average_latency_seconds": 0.0004,
+      "details": [
+        {
+          "id": "q01",
+          "question": "What testing methods and testing skills are mentioned in the document?",
+          "expected": [
+            "chunk_0"
+          ],
+          "retrieved": [
+            "chunk_0",
+            "chunk_3",
+            "chunk_1",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0007
+        },
+        {
+          "id": "q02",
+          "question": "What technologies are used in the projects?",
+          "expected": [
+            "chunk_0",
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_0",
+            "chunk_1",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 0.75,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0003
+        },
+        {
+          "id": "q03",
+          "question": "What is the purpose of the E-Commerce API and Database QA Automation Framework?",
+          "expected": [
+            "chunk_0",
+            "chunk_1"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_2",
+            "chunk_1",
+            "chunk_0"
+          ],
+          "hit_at_1": 0,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 0.5,
+          "recall_at_5": 1.0,
+          "mrr": 0.3333333333333333,
+          "latency_seconds": 0.0005
+        },
+        {
+          "id": "q04",
+          "question": "What authentication mechanism is mentioned in the document?",
+          "expected": [
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_0",
+            "chunk_1",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0003
+        },
+        {
+          "id": "q05",
+          "question": "Which technologies are associated with the blockchain-based secure voting system?",
+          "expected": [
+            "chunk_2"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_1",
+            "chunk_2",
+            "chunk_0"
+          ],
+          "hit_at_1": 0,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 0.3333333333333333,
+          "latency_seconds": 0.0005
+        },
+        {
+          "id": "q06",
+          "question": "What cybersecurity-related work is mentioned?",
+          "expected": [
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_0",
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "hit_at_1": 0,
+          "hit_at_3": 0,
+          "hit_at_5": 1,
+          "recall_at_3": 0.0,
+          "recall_at_5": 1.0,
+          "mrr": 0.25,
+          "latency_seconds": 0.0003
+        },
+        {
+          "id": "q07",
+          "question": "What types of applications or systems were developed?",
+          "expected": [
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_0",
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "hit_at_1": 0,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 0.6666666666666666,
+          "recall_at_5": 1.0,
+          "mrr": 0.5,
+          "latency_seconds": 0.0004
+        },
+        {
+          "id": "q08",
+          "question": "What programming languages are mentioned?",
+          "expected": [
+            "chunk_0"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_0",
+            "chunk_1",
+            "chunk_2"
+          ],
+          "hit_at_1": 0,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 0.5,
+          "latency_seconds": 0.0003
+        },
+        {
+          "id": "q09",
+          "question": "What testing-related tools and technologies are mentioned?",
+          "expected": [
+            "chunk_0",
+            "chunk_1"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_0",
+            "chunk_1",
+            "chunk_2"
+          ],
+          "hit_at_1": 0,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 0.5,
+          "latency_seconds": 0.0004
+        },
+        {
+          "id": "q10",
+          "question": "Which projects demonstrate software engineering skills?",
+          "expected": [
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_0",
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "hit_at_1": 0,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 0.6666666666666666,
+          "recall_at_5": 1.0,
+          "mrr": 0.5,
+          "latency_seconds": 0.0003
+        }
+      ]
+    },
+    {
+      "retriever": "Hybrid",
+      "questions": 10,
+      "hit_at_1": 0.9,
+      "hit_at_3": 1.0,
+      "hit_at_5": 1.0,
+      "recall_at_3": 0.9083,
+      "recall_at_5": 1.0,
+      "mrr": 0.95,
+      "average_latency_seconds": 0.0453,
+      "details": [
+        {
+          "id": "q01",
+          "question": "What testing methods and testing skills are mentioned in the document?",
+          "expected": [
+            "chunk_0"
+          ],
+          "retrieved": [
+            "chunk_0",
+            "chunk_1",
+            "chunk_3",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0859
+        },
+        {
+          "id": "q02",
+          "question": "What technologies are used in the projects?",
+          "expected": [
+            "chunk_0",
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_1",
+            "chunk_3",
+            "chunk_0",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 0.75,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0374
+        },
+        {
+          "id": "q03",
+          "question": "What is the purpose of the E-Commerce API and Database QA Automation Framework?",
+          "expected": [
+            "chunk_0",
+            "chunk_1"
+          ],
+          "retrieved": [
+            "chunk_0",
+            "chunk_3",
+            "chunk_1",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.041
+        },
+        {
+          "id": "q04",
+          "question": "What authentication mechanism is mentioned in the document?",
+          "expected": [
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_2",
+            "chunk_0",
+            "chunk_1"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0406
+        },
+        {
+          "id": "q05",
+          "question": "Which technologies are associated with the blockchain-based secure voting system?",
+          "expected": [
+            "chunk_2"
+          ],
+          "retrieved": [
+            "chunk_2",
+            "chunk_3",
+            "chunk_1",
+            "chunk_0"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0384
+        },
+        {
+          "id": "q06",
+          "question": "What cybersecurity-related work is mentioned?",
+          "expected": [
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_0",
+            "chunk_2",
+            "chunk_1"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0381
+        },
+        {
+          "id": "q07",
+          "question": "What types of applications or systems were developed?",
+          "expected": [
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_2",
+            "chunk_0",
+            "chunk_1",
+            "chunk_3"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 0.6666666666666666,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0581
+        },
+        {
+          "id": "q08",
+          "question": "What programming languages are mentioned?",
+          "expected": [
+            "chunk_0"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_0",
+            "chunk_1",
+            "chunk_2"
+          ],
+          "hit_at_1": 0,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 0.5,
+          "latency_seconds": 0.0328
+        },
+        {
+          "id": "q09",
+          "question": "What testing-related tools and technologies are mentioned?",
+          "expected": [
+            "chunk_0",
+            "chunk_1"
+          ],
+          "retrieved": [
+            "chunk_1",
+            "chunk_3",
+            "chunk_0",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0424
+        },
+        {
+          "id": "q10",
+          "question": "Which projects demonstrate software engineering skills?",
+          "expected": [
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_0",
+            "chunk_1",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 0.6666666666666666,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.0384
+        }
+      ]
+    },
+    {
+      "retriever": "Hybrid + Reranker",
+      "questions": 10,
+      "hit_at_1": 0.9,
+      "hit_at_3": 1.0,
+      "hit_at_5": 1.0,
+      "recall_at_3": 0.9083,
+      "recall_at_5": 1.0,
+      "mrr": 0.95,
+      "average_latency_seconds": 0.2988,
+      "details": [
+        {
+          "id": "q01",
+          "question": "What testing methods and testing skills are mentioned in the document?",
+          "expected": [
+            "chunk_0"
+          ],
+          "retrieved": [
+            "chunk_0",
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.3384
+        },
+        {
+          "id": "q02",
+          "question": "What technologies are used in the projects?",
+          "expected": [
+            "chunk_0",
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_2",
+            "chunk_0",
+            "chunk_1"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 0.75,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.2865
+        },
+        {
+          "id": "q03",
+          "question": "What is the purpose of the E-Commerce API and Database QA Automation Framework?",
+          "expected": [
+            "chunk_0",
+            "chunk_1"
+          ],
+          "retrieved": [
+            "chunk_1",
+            "chunk_0",
+            "chunk_3",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.2979
+        },
+        {
+          "id": "q04",
+          "question": "What authentication mechanism is mentioned in the document?",
+          "expected": [
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_2",
+            "chunk_1",
+            "chunk_0"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.2848
+        },
+        {
+          "id": "q05",
+          "question": "Which technologies are associated with the blockchain-based secure voting system?",
+          "expected": [
+            "chunk_2"
+          ],
+          "retrieved": [
+            "chunk_2",
+            "chunk_3",
+            "chunk_1",
+            "chunk_0"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.3017
+        },
+        {
+          "id": "q06",
+          "question": "What cybersecurity-related work is mentioned?",
+          "expected": [
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_2",
+            "chunk_1",
+            "chunk_0"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.3199
+        },
+        {
+          "id": "q07",
+          "question": "What types of applications or systems were developed?",
+          "expected": [
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_3",
+            "chunk_2",
+            "chunk_0",
+            "chunk_1"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 0.6666666666666666,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.3034
+        },
+        {
+          "id": "q08",
+          "question": "What programming languages are mentioned?",
+          "expected": [
+            "chunk_0"
+          ],
+          "retrieved": [
+            "chunk_0",
+            "chunk_2",
+            "chunk_3",
+            "chunk_1"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.2889
+        },
+        {
+          "id": "q09",
+          "question": "What testing-related tools and technologies are mentioned?",
+          "expected": [
+            "chunk_0",
+            "chunk_1"
+          ],
+          "retrieved": [
+            "chunk_0",
+            "chunk_1",
+            "chunk_3",
+            "chunk_2"
+          ],
+          "hit_at_1": 1,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "latency_seconds": 0.2966
+        },
+        {
+          "id": "q10",
+          "question": "Which projects demonstrate software engineering skills?",
+          "expected": [
+            "chunk_1",
+            "chunk_2",
+            "chunk_3"
+          ],
+          "retrieved": [
+            "chunk_0",
+            "chunk_3",
+            "chunk_2",
+            "chunk_1"
+          ],
+          "hit_at_1": 0,
+          "hit_at_3": 1,
+          "hit_at_5": 1,
+          "recall_at_3": 0.6666666666666666,
+          "recall_at_5": 1.0,
+          "mrr": 0.5,
+          "latency_seconds": 0.2702
+        }
+      ]
+    }
+  ]
+}
