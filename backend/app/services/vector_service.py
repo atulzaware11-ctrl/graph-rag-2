@@ -16,7 +16,11 @@ from backend.app.core.config import settings
 
 class VectorService:
     def __init__(self, vector_size: int = 384) -> None:
-        self.client = QdrantClient(url=settings.QDRANT_URL)
+        # self.client = QdrantClient(url=settings.QDRANT_URL)
+        self.client = QdrantClient(
+    url=settings.QDRANT_URL,
+    api_key=settings.QDRANT_API_KEY or None,
+)
         self.collection_name = settings.QDRANT_COLLECTION
 
         self._ensure_collection(vector_size)
