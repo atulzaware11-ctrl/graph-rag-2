@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./App.css";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 function App() {
 
@@ -52,7 +54,7 @@ function App() {
     try {
       const form = new FormData();
       form.append("file", file);
-      const response = await fetch("http://localhost:8000/api/documents/upload", {
+      const response = await fetch(`${API_BASE_URL}/api/documents/upload`, {
         method: "POST",
         body: form,
       });
@@ -92,7 +94,7 @@ function App() {
       const form = new FormData();
       form.append("document_id", activeDocument.document_id);
       form.append("file", sourceFile);
-      const response = await fetch("http://localhost:8000/api/graph/build", {
+      const response = await fetch(`${API_BASE_URL}/api/graph/build`, {
         method: "POST",
         body: form,
       });
@@ -137,7 +139,7 @@ function App() {
     try {
 
       const response = await fetch(
-        "http://localhost:8000/api/query",
+        `${API_BASE_URL}/api/query`,
         {
           method: "POST",
 

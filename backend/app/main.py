@@ -21,6 +21,7 @@ from backend.app.services.evidence_service import EvidenceService
 from backend.app.services.neo4j_service import Neo4jService
 from backend.app.services.document_registry import document_registry
 from backend.app.services.bm25_service import BM25Service
+from backend.app.core.config import settings
 
 logger = logging.getLogger(__name__)
 MAX_UPLOAD_BYTES = 20 * 1024 * 1024
@@ -63,7 +64,11 @@ class QueryRequest(BaseModel):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        origin.strip()
+        for origin in settings.CORS_ORIGINS.split(",")
+        if origin.strip()
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -194,7 +199,7 @@ def query(request: QueryRequest):
 
         retrieval = RetrievalService(bm25_service=bm25_service)
 
-        retrieved = retrieval.graph_enhanced_search(
+        retrieved = retrieval.route_search(
             query=request.question,
             document_id=document_id,
             limit=max(
@@ -584,6 +589,10 @@ def query(request: QueryRequest):
 
             "retrieval_method":
                 "hybrid_vector_bm25_graph_reranked",
+
+            "retrieval_route": retrieved["retrieval_route"],
+
+            "route_reason": retrieved["route_reason"],
 
             "graph_context":
                 graph_results,

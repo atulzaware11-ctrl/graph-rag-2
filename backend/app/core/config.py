@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 class Settings:
     OPENROUTER_API_KEY     = os.getenv("OPENROUTER_API_KEY","")
+    CORS_ORIGINS : str      = os.getenv("CORS_ORIGINS", "http://localhost:5173")
     QDRANT_URL : str       = os.getenv("QDRANT_URL", "http://localhost:6333")
     QDRANT_COLLECTION :str = os.getenv("QDRANT_COLLECTION", "graphrag_documents_v2")
     EMBEDDING_MODEL: str   = os.getenv("EMBEDDING_MODEL","sentence-transformers/all-MiniLM-L6-v2")
