@@ -120,6 +120,8 @@ class EvidenceService:
                     "chunk_id": document.get(
                         "chunk_id"
                     ),
+                    "document_id": document.get("document_id"),
+                    "filename": document.get("filename"),
                     "page": document.get(
                         "page"
                     ),

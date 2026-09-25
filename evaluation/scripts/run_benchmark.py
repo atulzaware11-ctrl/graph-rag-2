@@ -1,4 +1,5 @@
 import json
+import os
 import time
 from pathlib import Path
 
@@ -6,6 +7,7 @@ import requests
 
 
 API_URL = "http://localhost:8000/api/query"
+DOCUMENT_ID = os.getenv("GRAPHRAG_DOCUMENT_ID", "")
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
@@ -95,6 +97,10 @@ def calculate_keyword_coverage(
 
 
 def main():
+    if not DOCUMENT_ID:
+        raise RuntimeError(
+            "Set GRAPHRAG_DOCUMENT_ID to the ready document UUID before running the benchmark."
+        )
     questions = load_questions()
 
     results = []
@@ -120,7 +126,8 @@ def main():
         try:
             response = requests.post(
                 API_URL,
-               json={
+                json={
+    "document_id": DOCUMENT_ID,
     "question": query,
     "top_k": 5,
 },
@@ -402,6 +409,8 @@ def main():
         }
 
     output = {
+        "document_id": DOCUMENT_ID,
+        "legacy_data": False,
         "summary": summary,
         "results": results,
     }

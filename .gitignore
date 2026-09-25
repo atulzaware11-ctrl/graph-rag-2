@@ -32,6 +32,7 @@ Thumbs.db
 # Local data
 data/raw/
 data/processed/
+backend/data/documents.json
 
 # Python test/cache
 .pytest_cache/

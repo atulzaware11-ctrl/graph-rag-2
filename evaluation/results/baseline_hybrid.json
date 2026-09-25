@@ -1,4 +1,5 @@
 {
+  "legacy_data": true,
   "summary": {
     "questions": 10,
     "average_latency_seconds": 38.807,

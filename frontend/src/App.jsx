@@ -15,6 +15,102 @@ function App() {
 
   // Error message.
   const [error, setError] = useState("");
+  const [activeDocument, setActiveDocument] = useState(null);
+  const [sourceFile, setSourceFile] = useState(null);
+  const [uploadState, setUploadState] = useState("");
+  const [uploadError, setUploadError] = useState("");
+  const [graphState, setGraphState] = useState("");
+  const [graphError, setGraphError] = useState("");
+
+  function startNewDocument() {
+    setActiveDocument(null);
+    setQuestion("");
+    setResult(null);
+    setError("");
+    setUploadError("");
+    setUploadState("");
+    setSourceFile(null);
+    setGraphState("");
+    setGraphError("");
+  }
+
+  async function handleUpload(event) {
+    event.preventDefault();
+    const file = event.target.elements.pdf.files?.[0];
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
+      setUploadError("Choose a PDF file to upload.");
+      return;
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      setUploadError("PDF files must be 20 MB or smaller.");
+      return;
+    }
+    setUploadError("");
+    setUploadState("Uploading...");
+    const indexingTimer = setTimeout(() => setUploadState("Indexing..."), 700);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const response = await fetch("http://localhost:8000/api/documents/upload", {
+        method: "POST",
+        body: form,
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const messages = {
+          400: "That file is not a valid PDF.",
+          413: "PDF files must be 20 MB or smaller.",
+          500: "Document indexing failed. Please try again.",
+        };
+        throw new Error(messages[response.status] || "Unable to upload this PDF.");
+      }
+      setActiveDocument(data);
+      setSourceFile(file);
+      setResult(null);
+      setQuestion("");
+      setUploadState("Ready");
+      setGraphState("");
+      setGraphError("");
+      clearTimeout(indexingTimer);
+      event.target.reset();
+    } catch (err) {
+      clearTimeout(indexingTimer);
+      setUploadError(err.message === "Failed to fetch"
+        ? "GraphRAG-X is unavailable. Check that the backend is running."
+        : err.message || "Unable to upload this PDF.");
+      setUploadState("");
+    }
+  }
+
+  async function handleBuildGraph() {
+    if (!activeDocument || !sourceFile) return;
+
+    setGraphState("Building...");
+    setGraphError("");
+    try {
+      const form = new FormData();
+      form.append("document_id", activeDocument.document_id);
+      form.append("file", sourceFile);
+      const response = await fetch("http://localhost:8000/api/graph/build", {
+        method: "POST",
+        body: form,
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (data.error === "llm_quota_exceeded") {
+          throw new Error(data.message || "Knowledge graph generation has reached the current free-model request limit.");
+        }
+        throw new Error(data.detail || "Knowledge graph build failed.");
+      }
+      setGraphState(`Ready: ${data.entities_extracted || 0} entities`);
+    } catch (err) {
+      setGraphState("");
+      setGraphError(err.message === "Failed to fetch"
+        ? "GraphRAG-X is unavailable. Check that the backend is running."
+        : err.message || "Knowledge graph build failed.");
+    }
+  }
 
 
   // ---------------------------------------------------------
@@ -26,6 +122,11 @@ function App() {
     event.preventDefault();
 
     if (!question.trim()) {
+      setError("Enter a question before searching.");
+      return;
+    }
+    if (!activeDocument) {
+      setError("Upload a PDF before asking a question.");
       return;
     }
 
@@ -45,28 +146,37 @@ function App() {
           },
 
           body: JSON.stringify({
+            document_id: activeDocument.document_id,
             question: question,
             top_k: 5,
           }),
         }
       );
 
+      const data = await response.json().catch(() => ({}));
       if (!response.ok) {
+        if (data.error === "llm_quota_exceeded" && data.retrieval_available) {
+          setResult(data);
+          setError(data.message || "AI generation is temporarily unavailable. Retrieved evidence is shown below.");
+          return;
+        }
 
-        throw new Error(
-          `API request failed: ${response.status}`
-        );
+        const messages = {
+          404: "This document is no longer available. Upload it again to continue.",
+          409: "This document is still indexing. Try again when it is ready.",
+          422: "Enter a question of up to 2,000 characters.",
+        };
+        throw new Error(messages[response.status] || "Unable to answer that question.");
       }
-
-      const data = await response.json();
 
       setResult(data);
 
     } catch (err) {
 
       setError(
-        err.message ||
-        "Unable to query GraphRAG-X."
+        err.message === "Failed to fetch"
+          ? "GraphRAG-X is unavailable. Check that the backend is running."
+          : err.message || "Unable to query GraphRAG-X."
       );
 
     } finally {
@@ -121,12 +231,43 @@ function App() {
 
         </section>
 
+        <section className="answer-card document-panel">
+          <div className="card-header">
+            <h3>{activeDocument ? "Active document" : "Upload a PDF"}</h3>
+            {activeDocument && <button type="button" onClick={startNewDocument}>New Document</button>}
+          </div>
+          {!activeDocument && (
+            <form onSubmit={handleUpload}>
+              <input name="pdf" type="file" accept="application/pdf,.pdf" />
+              <button type="submit" disabled={uploadState === "Uploading..." || uploadState === "Indexing..."}>
+                {uploadState === "Uploading..." || uploadState === "Indexing..." ? uploadState : "Upload PDF"}
+              </button>
+            </form>
+          )}
+          {uploadState && <p>{uploadState}</p>}
+          {uploadError && <div className="error">{uploadError}</div>}
+          {activeDocument && (
+            <div>
+              <strong>{activeDocument.filename}</strong>
+              <p>{activeDocument.pages_processed} pages · {activeDocument.chunks_processed} chunks · {activeDocument.status}</p>
+              <small>Document ID: {activeDocument.document_id.slice(0, 8)}…</small>
+              <div>
+                <button type="button" onClick={handleBuildGraph} disabled={!sourceFile || graphState === "Building..."}>
+                  {graphState === "Building..." ? "Building..." : "Build Knowledge Graph"}
+                </button>
+              </div>
+              {graphState && <p>{graphState}</p>}
+              {graphError && <div className="error">{graphError}</div>}
+            </div>
+          )}
+        </section>
+
 
         {/* -------------------------------------------------
             QUESTION FORM
         -------------------------------------------------- */}
 
-        <form
+        {activeDocument && <form
           className="query-form"
           onSubmit={handleAsk}
         >
@@ -151,7 +292,7 @@ function App() {
 
           </button>
 
-        </form>
+        </form>}
 
 
         {/* -------------------------------------------------
@@ -397,6 +538,15 @@ function App() {
               </div>
 
             </div>
+
+            {result.timings && (
+              <div className="system-card">
+                <div><span>Retrieval</span><strong>{result.timings.retrieval_seconds}s</strong></div>
+                <div><span>Reranking</span><strong>{result.timings.rerank_seconds}s</strong></div>
+                <div><span>LLM</span><strong>{result.timings.llm_seconds}s</strong></div>
+                <div><span>Total</span><strong>{result.timings.total_seconds}s</strong></div>
+              </div>
+            )}
 
           </section>
 

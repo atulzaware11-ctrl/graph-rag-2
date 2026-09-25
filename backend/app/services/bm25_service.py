@@ -13,44 +13,53 @@ class BM25Service:
     """
 
     def __init__(self) -> None:
-        self.documents: list[dict] = []
-        self.bm25: BM25Okapi | None = None
+        self.indexes: dict[str, tuple[list[dict], BM25Okapi | None]] = {}
 
-    def build_index(self, documents: list[dict]) -> None:
+    def build_index(self, document_id: str, documents: list[dict]) -> None:
         """
         Build the BM25 index from document chunks.
         """
 
-        self.documents = documents
+        scoped_documents = [
+            document.copy()
+            for document in documents
+            if document.get("document_id") == document_id
+        ]
 
         tokenized_documents = [
             self._tokenize(
                 document.get("text", "")
             )
-            for document in documents
+            for document in scoped_documents
         ]
 
         if not tokenized_documents:
-            self.bm25 = None
+            self.indexes[document_id] = (scoped_documents, None)
             return
 
-        self.bm25 = BM25Okapi(
-            tokenized_documents
+        self.indexes[document_id] = (
+            scoped_documents,
+            BM25Okapi(tokenized_documents),
         )
+
+    def has_index(self, document_id: str) -> bool:
+        return document_id in self.indexes
 
     def search(
         self,
         query: str,
+        document_id: str,
         limit: int = 5,
     ) -> list[dict]:
         """
         Search indexed documents using BM25.
         """
 
-        if self.bm25 is None:
+        documents, bm25 = self.indexes.get(document_id, ([], None))
+        if bm25 is None:
             return []
 
-        if not self.documents:
+        if not documents:
             return []
 
         query_tokens = self._tokenize(query)
@@ -58,7 +67,7 @@ class BM25Service:
         if not query_tokens:
             return []
 
-        scores = self.bm25.get_scores(
+        scores = bm25.get_scores(
             query_tokens
         )
 
@@ -71,7 +80,7 @@ class BM25Service:
         results: list[dict] = []
 
         for index in ranked_indexes[:limit]:
-            document = self.documents[index].copy()
+            document = documents[index].copy()
 
             document["bm25_score"] = float(
                 scores[index]

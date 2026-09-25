@@ -1,4 +1,5 @@
 {
+  "legacy_data": true,
   "dataset": "evaluation\\datasets\\questions.json",
   "question_count": 10,
   "results": [

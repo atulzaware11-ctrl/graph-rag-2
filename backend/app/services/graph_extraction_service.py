@@ -4,6 +4,7 @@ import re
 from openai import OpenAI
 
 from backend.app.core.config import settings
+from backend.app.services.llm_service import LLMQuotaExceededError
 
 
 class GraphExtractionService:
@@ -18,6 +19,7 @@ class GraphExtractionService:
         self.client = OpenAI(
             api_key=settings.OPENROUTER_API_KEY,
             base_url="https://openrouter.ai/api/v1",
+            max_retries=0,
         )
 
     def extract(
@@ -98,22 +100,29 @@ TEXT:
 {text}
 """
 
-        response = self.client.chat.completions.create(
-            model=settings.LLM_MODEL,
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You extract factual knowledge from "
-                        "research documents."
-                    ),
-                },
-                {
-                    "role": "user",
-                    "content": prompt,
-                },
-            ],
-        )
+        try:
+            response = self.client.chat.completions.create(
+                model=settings.LLM_MODEL,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "You extract factual knowledge from "
+                            "research documents."
+                        ),
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt,
+                    },
+                ],
+            )
+        except Exception as exc:
+            if getattr(exc, "status_code", None) == 429:
+                raise LLMQuotaExceededError(
+                    "Knowledge graph generation has reached the current free-model request limit."
+                ) from None
+            raise
 
         content = (
             response.choices[0].message.content

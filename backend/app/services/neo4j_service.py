@@ -51,6 +51,7 @@ class Neo4jService:
     def create_graph(
         self,
         document_name: str,
+        document_id: str,
         page: int,
         chunk_id: str,
         entities: list[dict],
@@ -65,6 +66,7 @@ class Neo4jService:
             session.execute_write(
                 self._create_graph_transaction,
                 document_name,
+                document_id,
                 page,
                 chunk_id,
                 entities,
@@ -75,6 +77,7 @@ class Neo4jService:
     def _create_graph_transaction(
         tx,
         document_name: str,
+        document_id: str,
         page: int,
         chunk_id: str,
         entities: list[dict],
@@ -87,14 +90,18 @@ class Neo4jService:
 
         tx.run(
             """
-            MERGE (c:Chunk {id: $chunk_id})
+            MERGE (c:Chunk {id: $scoped_chunk_id})
             SET
                 c.page = $page,
-                c.document = $document_name
+                c.document = $document_name,
+                c.document_id = $document_id,
+                c.chunk_id = $chunk_id
             """,
+            scoped_chunk_id=f"{document_id}:{chunk_id}",
             chunk_id=chunk_id,
             page=page,
             document_name=document_name,
+            document_id=document_id,
         )
 
         # -----------------------------------------------------
@@ -125,16 +132,16 @@ class Neo4jService:
 
             tx.run(
                 f"""
-                MERGE (e:Entity:{safe_type} {{name: $name}})
+                MERGE (e:Entity:{safe_type} {{document_id: $document_id, name: $name}})
                 SET e.type = $type
 
-                MERGE (c:Chunk {{id: $chunk_id}})
-
-                MERGE (c)-[:MENTIONS]->(e)
+                MERGE (c:Chunk {{id: $scoped_chunk_id}})
+                MERGE (c)-[:MENTIONS {{document_id: $document_id}}]->(e)
                 """,
                 name=name,
+                document_id=document_id,
                 type=safe_type,
-                chunk_id=chunk_id,
+                scoped_chunk_id=f"{document_id}:{chunk_id}",
             )
 
         # -----------------------------------------------------
@@ -171,10 +178,11 @@ class Neo4jService:
 
             tx.run(
                 f"""
-                MERGE (source:Entity {{name: $source}})
-                MERGE (target:Entity {{name: $target}})
-                MERGE (source)-[:{safe_relation}]->(target)
+                MERGE (source:Entity {{document_id: $document_id, name: $source}})
+                MERGE (target:Entity {{document_id: $document_id, name: $target}})
+                MERGE (source)-[:{safe_relation} {{document_id: $document_id}}]->(target)
                 """,
+                document_id=document_id,
                 source=source,
                 target=target,
             )
@@ -186,6 +194,7 @@ class Neo4jService:
     def search_graph(
         self,
         query: str,
+        document_id: str,
         limit: int = 10,
     ) -> list[dict]:
         """
@@ -218,14 +227,14 @@ class Neo4jService:
 
             result = session.run(
                 """
-                MATCH (e:Entity)
+                MATCH (e:Entity {document_id: $document_id})
 
                 WHERE any(
                     word IN $words
                     WHERE toLower(e.name) CONTAINS word
                 )
 
-                OPTIONAL MATCH (e)-[r]-(connected)
+                OPTIONAL MATCH (e)-[r]-(connected:Entity {document_id: $document_id})
 
                 RETURN
                     e.name AS entity,
@@ -242,6 +251,7 @@ class Neo4jService:
                 LIMIT $limit
                 """,
                 words=words,
+                document_id=document_id,
                 limit=limit,
             )
 
@@ -262,6 +272,7 @@ class Neo4jService:
                     {
                         "entity": record["entity"],
                         "entity_type": record["entity_type"],
+                        "document_id": document_id,
                         "relationships": clean_relationships,
                     }
                 )

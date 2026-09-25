@@ -9,11 +9,16 @@ from backend.app.services.neo4j_service import Neo4jService
 def ingest_graph(
     file_path: str,
     document_name: str,
+    document_id: str,
 ) -> dict:
 
     pages = load_pdf(file_path)
 
-    chunks = chunk_text(pages)
+    chunks = chunk_text(
+        pages,
+        document_id=document_id,
+        filename=document_name,
+    )
 
     extractor = GraphExtractionService()
 
@@ -44,6 +49,7 @@ def ingest_graph(
 
             neo4j.create_graph(
                 document_name=document_name,
+                document_id=document_id,
                 page=chunk["page"],
                 chunk_id=chunk["chunk_id"],
                 entities=entities,

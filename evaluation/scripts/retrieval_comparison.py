@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -19,6 +20,7 @@ QUESTIONS_FILE = Path(
 RESULTS_FILE = Path(
     "evaluation/results/retrieval_comparison.json"
 )
+DOCUMENT_ID = os.getenv("GRAPHRAG_DOCUMENT_ID", "")
 
 
 def hit_at_k(retrieved, expected, k):
@@ -181,6 +183,10 @@ def evaluate_retriever(
 
 
 def main():
+    if not DOCUMENT_ID:
+        raise RuntimeError(
+            "Set GRAPHRAG_DOCUMENT_ID to the ready document UUID before running the comparison."
+        )
     with open(
         QUESTIONS_FILE,
         "r",
@@ -206,7 +212,7 @@ def main():
 
         vector_result = evaluate_retriever(
             "Vector",
-            retrieval.vector_search,
+            lambda question, limit: retrieval.vector_search(question, DOCUMENT_ID, limit),
             questions,
         )
 
@@ -220,7 +226,7 @@ def main():
 
         bm25_result = evaluate_retriever(
             "BM25",
-            retrieval.bm25_search,
+            lambda question, limit: retrieval.bm25_search(question, DOCUMENT_ID, limit),
             questions,
         )
 
@@ -234,7 +240,7 @@ def main():
 
         hybrid_result = evaluate_retriever(
             "Hybrid",
-            retrieval.hybrid_search,
+            lambda question, limit: retrieval.hybrid_search(question, DOCUMENT_ID, limit),
             questions,
         )
 
@@ -252,6 +258,7 @@ def main():
         ):
             candidates = retrieval.hybrid_search(
                 question,
+                DOCUMENT_ID,
                 limit=10,
             )
 
@@ -275,6 +282,8 @@ def main():
         retrieval.close()
 
     output = {
+        "document_id": DOCUMENT_ID,
+        "legacy_data": False,
         "dataset": str(
             QUESTIONS_FILE
         ),

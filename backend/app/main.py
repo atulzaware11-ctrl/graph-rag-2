@@ -1,19 +1,39 @@
 import os
-import shutil
+import logging
 import tempfile
 import time
+from functools import lru_cache
+from pathlib import PurePath
+from uuid import UUID, uuid4
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
+from pypdf.errors import PdfReadError, PdfStreamError
 
 from backend.app.pipelines.graph_ingestion import ingest_graph
 from backend.app.pipelines.ingestion import ingest_pdf
 from backend.app.services.reranker_service import RerankerService
 from backend.app.services.retrieval_service import RetrievalService
-from backend.app.services.llm_service import LLMService
+from backend.app.services.llm_service import LLMQuotaExceededError, LLMService
 from backend.app.services.evidence_service import EvidenceService
 from backend.app.services.neo4j_service import Neo4jService
+from backend.app.services.document_registry import document_registry
+from backend.app.services.bm25_service import BM25Service
+
+logger = logging.getLogger(__name__)
+MAX_UPLOAD_BYTES = 20 * 1024 * 1024
+LLM_QUOTA_MESSAGE = (
+    "The AI generation service has reached its current free-model request limit. "
+    "Retrieval and document indexing are still working. Please try again after the quota resets."
+)
+bm25_service = BM25Service()
+
+
+@lru_cache(maxsize=1)
+def _get_reranker() -> RerankerService:
+    return RerankerService()
 
 
 # ============================================================
@@ -32,8 +52,9 @@ app = FastAPI(
 # ============================================================
 
 class QueryRequest(BaseModel):
-    question: str
-    top_k: int = 5
+    document_id: UUID
+    question: str = Field(min_length=1, max_length=2000)
+    top_k: int = Field(default=5, ge=1, le=20)
 
 
 # ============================================================
@@ -68,56 +89,75 @@ async def health() -> dict[str, str]:
 async def upload_document(
     file: UploadFile = File(...)
 ):
-    if not file.filename:
+    original_name = file.filename or ""
+    filename = PurePath(original_name.replace("\\", "/")).name
+    if not filename:
         raise HTTPException(
             status_code=400,
             detail="Filename is required.",
         )
 
-    if not file.filename.lower().endswith(".pdf"):
+    if not filename.lower().endswith(".pdf"):
         raise HTTPException(
             status_code=400,
             detail="Only PDF files are supported.",
         )
+    if file.content_type and file.content_type.lower() not in {
+        "application/pdf", "application/octet-stream"
+    }:
+        raise HTTPException(status_code=400, detail="Only PDF files are supported.")
 
     temp_path = None
+    document_id = str(uuid4())
+    document_registry.create_document(document_id, filename)
 
     try:
-        # ----------------------------------------------------
-        # Save uploaded PDF temporarily
-        # ----------------------------------------------------
-
         with tempfile.NamedTemporaryFile(
             delete=False,
             suffix=".pdf",
         ) as temp_file:
-
-            shutil.copyfileobj(
-                file.file,
-                temp_file,
-            )
-
             temp_path = temp_file.name
+            total_bytes = 0
+            header = b""
+            while content := await file.read(1024 * 1024):
+                total_bytes += len(content)
+                if total_bytes > MAX_UPLOAD_BYTES:
+                    raise HTTPException(status_code=413, detail="PDF exceeds the 20 MB upload limit.")
+                if len(header) < 5:
+                    header += content[: 5 - len(header)]
+                temp_file.write(content)
+        if header != b"%PDF-":
+            raise HTTPException(status_code=400, detail="The uploaded file is not a valid PDF.")
 
-        # ----------------------------------------------------
-        # Ingest document
-        # ----------------------------------------------------
-
-        result = ingest_pdf(temp_path)
+        document_registry.update_document(document_id, status="indexing")
+        result = ingest_pdf(temp_path, document_id, filename, bm25_service)
+        metadata = document_registry.update_document(
+            document_id,
+            status="ready",
+            pages_processed=result["pages_processed"],
+            chunks_processed=result["chunks_processed"],
+        )
 
         return {
-            "message": "Document indexed successfully.",
-            "filename": file.filename,
-            **result,
+            **(metadata or {}),
+            "status": "ready",
         }
+    except HTTPException:
+        document_registry.update_document(document_id, status="failed")
+        raise
+    except (PdfReadError, PdfStreamError) as exc:
+        logger.info("Rejected malformed PDF for document %s", document_id)
+        document_registry.update_document(document_id, status="failed")
+        raise HTTPException(status_code=400, detail="The uploaded PDF is malformed or unreadable.") from exc
+    except Exception as exc:
+        logger.exception("Document indexing failed for %s", document_id)
+        document_registry.update_document(document_id, status="failed")
+        raise HTTPException(status_code=500, detail="Document indexing failed.") from exc
 
     finally:
-        # ----------------------------------------------------
-        # Remove temporary file
-        # ----------------------------------------------------
-
         if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
+        await file.close()
 
 
 # ============================================================
@@ -134,6 +174,15 @@ def query(request: QueryRequest):
     total_start = time.perf_counter()
 
     retrieval = None
+    document_id = str(request.document_id)
+
+    if not request.question.strip():
+        raise HTTPException(status_code=422, detail="Question cannot be empty.")
+    metadata = document_registry.get_document(document_id)
+    if metadata is None:
+        raise HTTPException(status_code=404, detail="Document not found.")
+    if metadata.get("status") != "ready":
+        raise HTTPException(status_code=409, detail="Document is not ready for querying.")
 
     try:
 
@@ -143,10 +192,11 @@ def query(request: QueryRequest):
 
         retrieval_start = time.perf_counter()
 
-        retrieval = RetrievalService()
+        retrieval = RetrievalService(bm25_service=bm25_service)
 
         retrieved = retrieval.graph_enhanced_search(
             query=request.question,
+            document_id=document_id,
             limit=max(
                 request.top_k * 3,
                 10,
@@ -159,12 +209,14 @@ def query(request: QueryRequest):
             - retrieval_start
         )
 
-        document_candidates = retrieved[
-            "documents"
+        document_candidates = [
+            candidate for candidate in retrieved["documents"]
+            if candidate.get("document_id") == document_id
         ]
 
-        graph_results = retrieved[
-            "graph"
+        graph_results = [
+            item for item in retrieved["graph"]
+            if item.get("document_id") == document_id
         ]
 
         # ====================================================
@@ -173,7 +225,7 @@ def query(request: QueryRequest):
 
         rerank_start = time.perf_counter()
 
-        reranker = RerankerService()
+        reranker = _get_reranker()
 
         reranked_documents = reranker.rerank(
             query=request.question,
@@ -277,6 +329,7 @@ def query(request: QueryRequest):
 
             llm_contexts.append(
                 {
+                    "document_id": source["document_id"],
                     "chunk_id": source[
                         "chunk_id"
                     ],
@@ -307,6 +360,7 @@ def query(request: QueryRequest):
 
             llm_contexts.append(
                 {
+                    "document_id": document_id,
                     "chunk_id": "knowledge_graph",
                     "page": None,
                     "text": graph_text,
@@ -326,11 +380,19 @@ def query(request: QueryRequest):
         llm_start = time.perf_counter()
 
         llm = LLMService()
-
-        answer = llm.generate(
-            question=request.question,
-            contexts=llm_contexts,
-        )
+        llm_quota_exceeded = False
+        try:
+            answer = llm.generate(
+                question=request.question,
+                contexts=llm_contexts,
+            )
+        except LLMQuotaExceededError:
+            logger.warning("LLM generation quota reached for document %s", document_id)
+            llm_quota_exceeded = True
+            answer = (
+                "AI answer generation is temporarily unavailable. "
+                "Retrieved evidence is available below."
+            )
 
         llm_time = (
             time.perf_counter()
@@ -498,8 +560,9 @@ def query(request: QueryRequest):
         # FINAL RESPONSE
         # ====================================================
 
-        return {
+        response_payload = {
             "question": request.question,
+            "document_id": document_id,
 
             "answer": answer,
 
@@ -529,6 +592,24 @@ def query(request: QueryRequest):
                 timings,
         }
 
+        if llm_quota_exceeded:
+            response_payload.update(
+                {
+                    "error": "llm_quota_exceeded",
+                    "message": LLM_QUOTA_MESSAGE,
+                    "retrieval_available": True,
+                }
+            )
+            return JSONResponse(status_code=429, content=response_payload)
+
+        return response_payload
+
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.exception("Query failed for document %s", document_id)
+        raise HTTPException(status_code=500, detail="Query failed.") from exc
+
     finally:
 
         # ====================================================
@@ -545,7 +626,8 @@ def query(request: QueryRequest):
 
 @app.post("/api/graph/build")
 async def build_graph(
-    file: UploadFile = File(...)
+    document_id: UUID = Form(...),
+    file: UploadFile = File(...),
 ):
 
     if not file.filename:
@@ -560,6 +642,16 @@ async def build_graph(
             detail="Only PDF files are supported.",
         )
 
+    document_key = str(document_id)
+    metadata = document_registry.get_document(document_key)
+    if metadata is None:
+        raise HTTPException(status_code=404, detail="Document not found.")
+    supplied_name = PurePath(file.filename.replace("\\", "/")).name
+    if supplied_name != metadata["filename"]:
+        raise HTTPException(status_code=400, detail="Uploaded filename does not match the selected document.")
+    if file.content_type and file.content_type.lower() not in {"application/pdf", "application/octet-stream"}:
+        raise HTTPException(status_code=400, detail="Only PDF files are supported.")
+
     temp_path = None
 
     try:
@@ -572,13 +664,13 @@ async def build_graph(
             delete=False,
             suffix=".pdf",
         ) as temp_file:
-
-            shutil.copyfileobj(
-                file.file,
-                temp_file,
-            )
-
             temp_path = temp_file.name
+            content = await file.read(MAX_UPLOAD_BYTES + 1)
+            if len(content) > MAX_UPLOAD_BYTES:
+                raise HTTPException(status_code=413, detail="PDF exceeds the 20 MB upload limit.")
+            temp_file.write(content)
+        if not content.startswith(b"%PDF-"):
+            raise HTTPException(status_code=400, detail="The uploaded file is not a valid PDF.")
 
         # ----------------------------------------------------
         # Build Neo4j graph
@@ -586,25 +678,35 @@ async def build_graph(
 
         result = ingest_graph(
             temp_path,
-            file.filename,
+            metadata["filename"],
+            document_key,
         )
+        document_registry.update_document(document_key, graph_status="ready")
 
         return {
             "message":
                 "Knowledge graph built successfully.",
 
-            "filename":
-                file.filename,
+            "filename": metadata["filename"],
 
             **result,
         }
 
+    except HTTPException:
+        raise
+    except LLMQuotaExceededError:
+        return JSONResponse(
+            status_code=429,
+            content={
+                "error": "llm_quota_exceeded",
+                "message": "Knowledge graph generation has reached the current free-model request limit.",
+            },
+        )
+    except (PdfReadError, PdfStreamError) as exc:
+        raise HTTPException(status_code=400, detail="The uploaded PDF is malformed or unreadable.") from exc
     except Exception as exc:
-
-        raise HTTPException(
-            status_code=500,
-            detail=str(exc),
-        ) from exc
+        logger.exception("Graph build failed for document %s", document_key)
+        raise HTTPException(status_code=500, detail="Knowledge graph build failed.") from exc
 
     finally:
 
@@ -621,6 +723,7 @@ async def build_graph(
 @app.get("/api/graph/search")
 def graph_search(
     query: str,
+    document_id: UUID,
     limit: int = 10,
 ):
 
@@ -630,6 +733,7 @@ def graph_search(
 
         results = neo4j.search_graph(
             query,
+            str(document_id),
             limit,
         )
 

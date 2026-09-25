@@ -1,4 +1,5 @@
 from sentence_transformers import SentenceTransformer
+from functools import lru_cache
 
 from backend.app.core.config import settings
 
@@ -31,3 +32,8 @@ class EmbeddingService:
         )
 
         return embedding.tolist()
+
+
+@lru_cache(maxsize=1)
+def get_embedding_service() -> EmbeddingService:
+    return EmbeddingService()

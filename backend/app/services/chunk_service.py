@@ -1,16 +1,18 @@
 def chunk_text(
     pages: list[dict],
+    document_id: str,
+    filename: str | None = None,
     chunk_size: int = 1000,
     overlap: int = 150,
 ) -> list[dict]:
     """
-    Split extracted page text into overlapping chunks.
+    Split extracted PDF pages into overlapping chunks.
 
-    Keeping the page number allows us to cite the original PDF later.
+    The caller supplies the upload's document_id. IDs are never
+    generated during chunking.
     """
 
     chunks = []
-
     chunk_id = 0
 
     for page in pages:
@@ -27,6 +29,8 @@ def chunk_text(
             if chunk:
                 chunks.append(
                     {
+                        "document_id": document_id,
+                        "filename": filename,
                         "chunk_id": f"chunk_{chunk_id}",
                         "page": page_number,
                         "text": chunk,

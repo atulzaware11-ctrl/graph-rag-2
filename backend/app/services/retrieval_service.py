@@ -2,9 +2,7 @@ from backend.app.services.embedding_service import (
     EmbeddingService,
 )
 
-from backend.app.services.vector_service import (
-    VectorService,
-)
+from backend.app.services.vector_service import VectorService, get_vector_service
 
 from backend.app.services.bm25_service import (
     BM25Service,
@@ -17,6 +15,7 @@ from backend.app.services.document_store import (
 from backend.app.services.neo4j_service import (
     Neo4jService,
 )
+from backend.app.services.embedding_service import get_embedding_service
 
 
 class RetrievalService:
@@ -32,22 +31,16 @@ class RetrievalService:
     5. Graph-enhanced retrieval
     """
 
-    def __init__(self) -> None:
+    def __init__(self, bm25_service: BM25Service | None = None) -> None:
         # --------------------------------------------------
         # Initialize retrieval components
         # --------------------------------------------------
 
-        self.embedding_service = (
-            EmbeddingService()
-        )
+        self.embedding_service = get_embedding_service()
 
-        self.vector_service = (
-            VectorService()
-        )
+        self.vector_service = get_vector_service()
 
-        self.bm25_service = (
-            BM25Service()
-        )
+        self.bm25_service = bm25_service or BM25Service()
 
         self.neo4j_service = (
             Neo4jService()
@@ -57,36 +50,7 @@ class RetrievalService:
         # Load documents for BM25
         # --------------------------------------------------
 
-        documents = (
-            document_store.get_documents()
-        )
-
-        # The in-memory document store is empty
-        # after a fresh Python process starts.
-        #
-        # Therefore, load the indexed chunks
-        # directly from Qdrant when necessary.
-
-        if not documents:
-            documents = (
-                self._load_documents_from_qdrant()
-            )
-
-        if documents:
-            self.bm25_service.build_index(
-                documents
-            )
-
-            print(
-                f"BM25 index built with "
-                f"{len(documents)} documents."
-            )
-
-        else:
-            print(
-                "WARNING: No documents available "
-                "for BM25 indexing."
-            )
+        self._bm25_indexed_documents: set[str] = set()
 
     # ======================================================
     # QDRANT → BM25 DOCUMENT LOADING
@@ -94,6 +58,7 @@ class RetrievalService:
 
     def _load_documents_from_qdrant(
         self,
+        document_id: str,
     ) -> list[dict]:
         """
         Load document chunks from Qdrant.
@@ -104,58 +69,13 @@ class RetrievalService:
         """
 
         try:
-            response = (
-                self.vector_service.client.scroll(
-                    collection_name=(
-                        self.vector_service.collection_name
-                    ),
-                    limit=1000,
-                    with_payload=True,
-                )
+            documents = self.vector_service.get_document_chunks(
+                document_id,
             )
-
-            points = response[0]
-
-            documents: list[dict] = []
-
-            for point in points:
-                payload = (
-                    point.payload or {}
-                )
-
-                chunk_id = payload.get(
-                    "chunk_id"
-                )
-
-                page = payload.get(
-                    "page"
-                )
-
-                text = payload.get(
-                    "text"
-                )
-
-                # Ignore incomplete payloads.
-                if not chunk_id:
-                    continue
-
-                if not text:
-                    continue
-
-                documents.append(
-                    {
-                        "chunk_id": chunk_id,
-                        "page": page,
-                        "text": text,
-                    }
-                )
 
             # Keep deterministic ordering.
             documents.sort(
-                key=lambda item: item.get(
-                    "chunk_id",
-                    "",
-                )
+                key=lambda item: item.get("chunk_id", "")
             )
 
             print(
@@ -180,6 +100,7 @@ class RetrievalService:
     def vector_search(
         self,
         query: str,
+        document_id: str,
         limit: int = 5,
     ) -> list[dict]:
         """
@@ -196,6 +117,7 @@ class RetrievalService:
             self.vector_service.search(
                 query_vector,
                 limit=limit,
+                document_id=document_id,
             )
         )
 
@@ -211,6 +133,8 @@ class RetrievalService:
                     "chunk_id": payload.get(
                         "chunk_id"
                     ),
+                    "document_id": payload.get("document_id"),
+                    "filename": payload.get("filename"),
                     "page": payload.get(
                         "page"
                     ),
@@ -232,14 +156,26 @@ class RetrievalService:
     def bm25_search(
         self,
         query: str,
+        document_id: str,
         limit: int = 5,
     ) -> list[dict]:
         """
         Keyword-based BM25 search.
         """
 
+        if not self.bm25_service.has_index(document_id):
+            documents = [
+                document
+                for document in document_store.get_documents()
+                if document.get("document_id") == document_id
+            ]
+            if not documents:
+                documents = self._load_documents_from_qdrant(document_id)
+            self.bm25_service.build_index(document_id, documents)
+
         return self.bm25_service.search(
             query,
+            document_id,
             limit=limit,
         )
 
@@ -250,6 +186,7 @@ class RetrievalService:
     def hybrid_search(
         self,
         query: str,
+        document_id: str,
         limit: int = 5,
     ) -> list[dict]:
         """
@@ -269,6 +206,7 @@ class RetrievalService:
         vector_results = (
             self.vector_search(
                 query,
+                document_id,
                 limit=limit,
             )
         )
@@ -276,6 +214,7 @@ class RetrievalService:
         bm25_results = (
             self.bm25_search(
                 query,
+                document_id,
                 limit=limit,
             )
         )
@@ -301,6 +240,8 @@ class RetrievalService:
                 chunk_id,
                 {
                     "chunk_id": chunk_id,
+                    "document_id": item.get("document_id"),
+                    "filename": item.get("filename"),
                     "page": item.get(
                         "page"
                     ),
@@ -343,6 +284,8 @@ class RetrievalService:
                 chunk_id,
                 {
                     "chunk_id": chunk_id,
+                    "document_id": item.get("document_id", document_id),
+                    "filename": item.get("filename"),
                     "page": item.get(
                         "page"
                     ),
@@ -387,6 +330,7 @@ class RetrievalService:
     def graph_search(
         self,
         query: str,
+        document_id: str,
         limit: int = 10,
     ) -> list[dict]:
         """
@@ -396,6 +340,7 @@ class RetrievalService:
         return (
             self.neo4j_service.search_graph(
                 query,
+                document_id,
                 limit,
             )
         )
@@ -407,6 +352,7 @@ class RetrievalService:
     def graph_enhanced_search(
         self,
         query: str,
+        document_id: str,
         limit: int = 8,
         graph_limit: int = 10,
     ) -> dict:
@@ -418,6 +364,7 @@ class RetrievalService:
         hybrid_results = (
             self.hybrid_search(
                 query,
+                document_id,
                 limit=limit,
             )
         )
@@ -425,6 +372,7 @@ class RetrievalService:
         graph_results = (
             self.graph_search(
                 query,
+                document_id,
                 limit=graph_limit,
             )
         )
