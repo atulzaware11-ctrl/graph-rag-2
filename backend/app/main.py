@@ -12,7 +12,8 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from pypdf.errors import PdfReadError, PdfStreamError
 
-from backend.app.pipelines.graph_ingestion import ingest_graph
+from app.pipelines.graph_ingestion import ingest_graph
+# from app.pipelines.graph_ingestion import ingest_graph
 from backend.app.pipelines.ingestion import ingest_pdf
 from backend.app.services.reranker_service import RerankerService
 from backend.app.services.retrieval_service import RetrievalService
