@@ -1,9 +1,9 @@
-from backend.app.services.document_service import load_pdf
-from backend.app.services.chunk_service import chunk_text
-from backend.app.services.graph_extraction_service import (
+from app.services.document_service import load_pdf
+from app.services.chunk_service import chunk_text
+from app.services.graph_extraction_service import (
     GraphExtractionService,
 )
-from backend.app.services.neo4j_service import Neo4jService
+from app.services.neo4j_service import Neo4jService
 
 
 def ingest_graph(

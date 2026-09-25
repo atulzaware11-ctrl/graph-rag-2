@@ -14,16 +14,16 @@ from pypdf.errors import PdfReadError, PdfStreamError
 
 from app.pipelines.graph_ingestion import ingest_graph
 # from app.pipelines.graph_ingestion import ingest_graph
-from backend.app.pipelines.ingestion import ingest_pdf
-from backend.app.services.reranker_service import RerankerService
-from backend.app.services.retrieval_service import RetrievalService
-from backend.app.services.llm_service import LLMQuotaExceededError, LLMService
-from backend.app.services.evidence_service import EvidenceService
-from backend.app.services.neo4j_service import Neo4jService
-from backend.app.services.document_registry import document_registry
-from backend.app.services.bm25_service import BM25Service
-from backend.app.core.config import settings
-
+from app.pipelines.ingestion import ingest_pdf
+from app.services.reranker_service import RerankerService
+from app.services.retrieval_service import RetrievalService
+from app.services.llm_service import LLMQuotaExceededError, LLMService
+from app.services.evidence_service import EvidenceService
+from app.services.neo4j_service import Neo4jService
+from app.services.document_registry import document_registry
+from app.services.bm25_service import BM25Service
+from app.core.config import settings
+from app.services.document_service import load_pdf
 logger = logging.getLogger(__name__)
 MAX_UPLOAD_BYTES = 20 * 1024 * 1024
 LLM_QUOTA_MESSAGE = (
